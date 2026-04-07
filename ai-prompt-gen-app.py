@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Set page configuration
-st.set_page_config(page_title="AI Prompt Generator", page_icon="🚀")
+st.set_page_config(page_title="Use AI Like a Pro", page_icon="🚀")
 
 # Styling to match your green theme
 st.markdown("""
@@ -12,6 +12,7 @@ st.markdown("""
     .stTitle {
         color: #16a34a;
         font-weight: 800;
+        font-size: 3rem !important;
     }
     .formula-box {
         background-color: #f0fdf4;
@@ -26,11 +27,15 @@ st.markdown("""
         font-weight: bold;
         font-size: 1.2rem;
     }
+    /* Style for the code output area */
+    code {
+        color: #10b981 !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # Header
-st.title("Teach AI Like a Pro")
+st.title("Use AI Like a Pro")
 st.subheader("Universal Templates for 10× better results")
 
 # Core Formula Display
@@ -95,7 +100,12 @@ with st.container():
         form_values[field["id"]] = st.text_input(field["label"], placeholder=field["placeholder"])
 
 # Options
-cot_enabled = st.checkbox('Add "Chain-of-Thought" (Think step by step)', value=True)
+st.markdown("### Optional Enhancements")
+col1, col2 = st.columns(2)
+with col1:
+    cot_enabled = st.checkbox('Add "Chain-of-Thought"', value=True, help='Tells AI to think step-by-step for higher accuracy.')
+with col2:
+    multi_version = st.checkbox('I want 5 versions to choose from', value=False)
 
 # Logic to build prompt
 base_prompt = selected_template["template_str"].format(**{k: (v if v else f"[{k}]") for k, v in form_values.items()})
@@ -103,9 +113,12 @@ base_prompt = selected_template["template_str"].format(**{k: (v if v else f"[{k}
 if cot_enabled:
     base_prompt += "\n\nThink step by step before answering."
 
+if multi_version:
+    base_prompt += "\n\nPlease provide 5 distinct variations of this output so I can choose the best one."
+
 # Output Area
 st.markdown("---")
 st.write("### Your Generated Prompt")
 st.code(base_prompt, language="markdown")
 
-st.info("Copy the code above and paste it into your favorite AI tool.")
+st.success("Copy the code above and paste it into your favorite AI tool (ChatGPT, Grok, Claude, etc).")
